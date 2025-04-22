@@ -1,12 +1,31 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-  env: {
-    POLYMARKET_API_URL: process.env.POLYMARKET_API_URL,
-    POLYMARKET_API_KEY: process.env.POLYMARKET_API_KEY,
-    ACCOUNT_ID: process.env.ACCOUNT_ID,
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET,POST,PUT,DELETE,OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization, mb-metadata',
+          },
+        ],
+      },
+    ];
   },
-}
+  async rewrites() {
+    return [
+      {
+        source: '/.well-known/ai-plugin.json',
+        destination: '/api/ai-plugin',
+      },
+    ];
+  },
+};
 
-module.exports = nextConfig
+export default nextConfig;
